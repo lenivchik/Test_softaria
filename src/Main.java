@@ -12,7 +12,6 @@ public class Main {
         System.out.printf(Result);
     }
 
-\
     static void filldata(int k, Map hm){
         for (int i=0; i <= 4+k; i+=k){
             hm.put(String.format("url%d",i), String.format("data%d",i%(6/k)));
@@ -31,27 +30,28 @@ public class Main {
         List <String> update  = new ArrayList<>();
         List <String> insert  = new ArrayList<>();
         List <String> del  = new ArrayList<>();
-        finddel(hm1.keySet(), hm2.keySet(),del);
-        for(Map.Entry<String, String> item : hm2.entrySet()){
-            String key = item.getKey();
-            if (!hm1.containsKey(key) ) {
-                insert.add(key);
-                continue;
-            }
-            if (!hm1.get(key).equals(item.getValue()))
-                update.add(key);
-        }
+        Set key1 = hm1.keySet();
+        Set key2 = hm2.keySet();
+        find_upd_insert(hm1.keySet(), hm2.keySet(),update,insert,hm1,hm2);
+        find_del(key1, key2,del);
         return print (convert(del), convert(insert),convert(update)) ;
     }
 
-
-    static void finddel(Set keys1, Set keys2, List del){
-        if (!keys1.equals(keys2)){
-            for (String current : (Iterable<String>) keys1) {
+    static void find_upd_insert(Set keys1, Set keys2, List update, List insert, Map hm1, Map hm2){
+            for (String current : (Iterable<String>) keys2) {
+                if (!(keys1.contains(current))) {
+                    insert.add(current);
+                    continue;
+                }
+                if (!hm1.get(current).equals(hm2.get(current)))
+                    update.add(current);
+        }
+    }
+    static void find_del(Set keys1, Set keys2, List del){
+        if (!keys1.equals(keys2))
+            for (String current : (Iterable<String>) keys1)
                 if (!(keys2.contains(current)))
                     del.add(current);
-            }
-        }
     }
 
     static String convert(List list){
